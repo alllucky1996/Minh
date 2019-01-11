@@ -72,29 +72,38 @@ namespace FashionGo.Controllers
 
         public ActionResult Update(int id, int quantity, string slS, string slM, string slL, string slXL)
         {
+            string mess = "";
             var cart = ShoppingCart.Cart;
             int S = slS== null?0: int.Parse(slS);
             int M = slM == null ? 0 : int.Parse(slM);
             int L = slL == null ? 0 : int.Parse(slL);
             int XL = slXL == null ? 0 : int.Parse(slXL);
-          //  if (slS != null || slM != null|| slL != null|| slXL != null)
+            // tìm sp
+            var sp = db.Products.Find(id);
+            if (S > sp.S) mess = "Số lượng size S trong kho không đủ "+S;
+            if (M > sp.M) mess = "Số lượng size M trong kho không đủ " + M;
+            if (L > sp.L) mess = "Số lượng size L trong kho không đủ " + L;
+            if (XL > sp.XL) mess = "Số lượng size XL trong kho không đủ " + XL;
+            if(mess=="")
                 cart.Update(id, S,M,L, XL);
            //else
            //     cart.Update(id, quantity);
 
             var p = cart.Items.Single(i => i.Id == id);
+           
             var info = new
             {
                 Count = cart.Count,
-                Total = cart.Total,
+                Total = string.Format("{0:#,0.####}", cart.Total),
                 quantity=quantity,
                 // Amount = p.PriceAfter.Value * p.Amount
                 S = p.PriceAfter.Value * p.S,
                 M = p.PriceAfter.Value * p.M,
                 L = p.PriceAfter.Value * p.L ,
                 XL = p.PriceAfter.Value * p.XL,
-                tong =( S+M+L+XL),
-                PriceAfter = p.PriceAfter
+                tong = string.Format("{0:#,0.####}", (p.S.Value+p.M.Value+p.L.Value+p.XL.Value) * p.PriceAfter),                
+                PriceAfter = p.PriceAfter,
+                Mess = mess
             };
             return Json(info, JsonRequestBehavior.AllowGet);
         }

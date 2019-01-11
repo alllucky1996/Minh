@@ -9,6 +9,8 @@ namespace FashionGo
         public static void RegisterBundles(BundleCollection bundles)
         {
             BundleTable.EnableOptimizations = false;
+            bundles.Add(new ScriptBundle("~/jquery").Include(
+                        "~/Scripts/jquery-3.3.1.min.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js"));

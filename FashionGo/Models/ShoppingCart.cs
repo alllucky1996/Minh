@@ -133,15 +133,17 @@
         {
             var db = new ApplicationDbContext();
             Product item = null;
-            try
-            {
-                item = Items.Single(i => i.Id == id);
-            }
-            catch (System.Exception ex)
-            {
-                item = db.Products.Find(id);
-                Debug.WriteLine(ex.Message);
-            }
+            bool any = Items.Any(o => o.Id == id);
+            //try
+            //{
+            //    item = Items.Single(i => i.Id == id);
+            //}
+            //catch (System.Exception ex)
+            //{
+            //    item = db.Products.Find(id);
+            //    Debug.WriteLine(ex.Message);
+            //}
+            if (any) { return; }
             item.M = 1;
             item.S = item.L = item.XL = 0;
             Items.Add(item);
@@ -244,15 +246,29 @@
         {
             try
             {
-                var item = Items.Single(i => i.Id == id);
-                Total -= item.PriceAfter.Value * (item.Tong == null ? 0 : item.Tong.Value);
-                Count -= (item.Tong == null ? 0 : item.Tong.Value);
+                var item = Items.Where(i => i.Id == id).FirstOrDefault();
+                //Total -= item.PriceAfter.Value * (item.Tong == null ? 0 : item.Tong.Value);
+                //Count -= (item.Tong == null ? 0 : item.Tong.Value);
                 Items.Remove(item);
+                double t = 0;int c = 0;
+                foreach (var i in Items)
+                {
+                    t += i.PriceAfter.Value * i.Tong.Value;
+                    c += i.Tong.Value;
+                }
+                Total = t;Count = c;
             }
             catch (System.Exception ex)
             {
                 Debug.WriteLine("Có đâu mà xóa");
                 Debug.WriteLine(ex.Message);
+                double t = 0; int c = 0;
+                foreach (var i in Items)
+                {
+                    t += i.PriceAfter.Value * i.Tong.Value;
+                    c += i.Tong.Value;
+                }
+                Total = t; Count = c;
             }
         }
 
@@ -266,51 +282,22 @@
         public void Update(int id,int slS, int slM, int slL, int slXL)
         {
            
-            var item = Items.Single(i => i.Id == id);
-            item.S = slS;
-            item.M = slM;
-            item.L = slL;
-            item.XL = slXL;
-            // if (slS>0)
-            // {
-            //     var xxx = (slS - item.S == null ? 0 : item.S.Value);
-            ////     Total += item.PriceAfter.Value * xxx;
-            ////     Count += (slS - item.S==null?0: item.S.Value);
-            //     item.S = slS;
-            // }
-            // if (slM == 1)
-            // {
-            // //    Total = item.PriceAfter.Value ;
-            //     Count += 1;
-            //     item.M = slM;
-            // }
-            // if (slM>1)
-            // {
-            //     var xxx = (slM - item.M == null ? 0 : item.M.Value);
-            //  //   Total += item.PriceAfter.Value * xxx;
-            // //    Count +=  (slM - item.M == null ? 0 : item.M.Value);
-            //     item.M = slM;
-            // }
-            // if (slL>0)
-            // {
-            //     var xxx = (slL - item.L == null ? 0 : item.L.Value);
-            //  //   Total += item.PriceAfter.Value * xxx;
-            ////     Count += slL - item.L== null?0: item.L.Value;
-            //     item.L = slL;
-            // }
-            // if (slXL>0)
-            // {
-            //     var xxx = (slXL - (item.XL == null ? 0 : item.XL.Value));
-            //   //  Total += item.PriceAfter.Value * xxx;
-            //   //  Count += slXL - item.XL== null?0: item.XL.Value;
-            //     item.XL = slXL;
-            // }
-            // Total += item.PriceAfter.Value * (item.Tong == null ? 0 : item.Tong.Value);
+            var item = Items.Where(i => i.Id == id).FirstOrDefault();
+           
+            if (slS != item.S  )
+                item.S = slS;
+            if (slM != item.M  )
+                item.M = slM;
+            if (slL != item.L  )
+                item.L = slL;
+            if (slXL != item.XL  )
+                item.XL = slXL;
+            int tong = item.S.Value + item.M.Value + item.L.Value + item.XL.Value;
             double t = 0; int c = 0;
             foreach (var i in Items)
             {
-                t += i.PriceAfter.Value * (item.Tong == null ? 0 : item.Tong.Value);
-                c += (item.Tong == null ? 0 : item.Tong.Value);
+                t += i.PriceAfter.Value * (tong);
+                c +=  tong;
             }
             Total = t; Count = c;
 

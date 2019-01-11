@@ -46,11 +46,11 @@
                             <th>XL</th>
                             <th>Bỏ</th>
                         </tr>
-                        <tr>
-                            <td><input type="number" min="0" class="input-mini quantity" value="@(p.S== null?0:p.S)" name="quantity[@p.Id]" data-id="@p.Id" id="quantity_@p.Id" slS="slS"></td>
-                            <td><input type="number" min="0" class="input-mini quantity" value="@(p.M==null?0:p.M)" name="quantity[@p.Id]" data-id="@p.Id" id="quantity_@p.Id" slM="slM"></td>
-                            <td> <input type="number" min="0" class="input-mini quantity" value="@(p.L==null?0:p.L)" name="quantity[@p.Id]" data-id="@p.Id" id="quantity_@p.Id" slL="slL"></td>
-                            <td><input type="number" min="0" class="input-mini quantity" value="@(p.XL== null?0:p.XL)" name="quantity[@p.Id]" data-id="@p.Id" id="quantity_@p.Id" slXL="slXL"></td>
+                        <tr id="row-@p.Id">
+                            <td><input type="number" min="0" class="input-mini quantity" value="@(p.S== null?0:p.S)" name="quantity[@p.Id]" data-id="@p.Id" Loai="slS" slS="slS"></td>
+                            <td><input type="number" min="0" class="input-mini quantity" value="@(p.M==null?0:p.M)" name="quantity[@p.Id]" data-id="@p.Id" Loai="slM" slM="slM"></td>
+                            <td> <input type="number" min="0" class="input-mini quantity" value="@(p.L==null?0:p.L)" name="quantity[@p.Id]" data-id="@p.Id" Loai="slL" slL="slL"></td>
+                            <td><input type="number" min="0" class="input-mini quantity" value="@(p.XL== null?0:p.XL)" name="quantity[@p.Id]" data-id="@p.Id" Loai="slXL" slXL="slXL"></td>
                             <td>
                                 <a class="eshop-remove-item-cart btn text-danger" href="#" data-id="@p.Id" onclick="return deleteFromCart(@p.Id);" title="Xóa khỏi giỏ hàng">
                                     <i class="fa fa-times"></i>
@@ -61,17 +61,9 @@
                 </td>
                 <td>
 
-                    @{ if (p.PriceAfter !=null)
-                        {
-                    <span id="sum-@p.Id"> @Html.FormatValue(p.PriceAfter * (p.Tong == 0 ? 1 : p.Tong), "{0:0,0}")</span>
-                        }
-                        else
-                        {
-                            <span id="sum-@p.Id">
-                                @Html.FormatValue(p.Price * (p.Tong == 0 ? 1 : p.Tong), "{0:0,0}")
-                            </span><sup>đ</sup>
-                        }
-                    }
+                  
+                            <span id="sum-@p.Id"> @Html.FormatValue(p.PriceAfter * (p.Tong == 0 ? 1 : p.Tong), "{0:0,0}")</span><sup>đ</sup>
+                       
 
 
                 </td>
@@ -84,7 +76,7 @@
             </th>
         </tr>
     </table>
-    
+
     <div class="row">
         <div class="col-md-4 col-xs-12">
             <table class="table table-bordered">
@@ -109,15 +101,15 @@
                 </tbody>
             </table>
         </div>
-        
+
     </div>
     <div class="eshop-cart-checkout">
-        
+
         <form action="/Cart/Clear" method="post">
             <a href="@Url.RouteUrl("Home")" class="btn btn-success pull-left">
                 <i class="fa fa-shopping-bag"></i> THÊM SẢN PHẨM KHÁC
             </a>
-            <a href="@Url.RouteUrl("Checkout")" class="btn btn-primary pull-right" >
+            <a href="@Url.RouteUrl("Checkout")" class="btn btn-primary pull-right">
                 <i class="fa fa-cart-arrow-down"></i> Đặt Hàng
             </a>
             <button class="btn btn-default pull-right" onclick="return confirm('Xác nhận bạn muốn xóa giỏ hàng?');">
@@ -125,37 +117,70 @@
             </button>
         </form>
     </div>
-    
-</div>
 
+</div>
+@Scripts.Render("~/jquery")
 <script>
-    jQuery(function ($) {
-        
-            $(document).delegate(".quantity", "change", function () {
+   
+            $("input").change(function () {
                 pid = $(this).attr("data-id");
-                qty = $(this).val();
-                slS = $(this).attr("slS") =='slS'?($(this).val()):0;
-                slM = $(this).attr("slM") == 'slM' ? ($(this).val()) : 0;
-                slL = $(this).attr("slL") == 'slL' ? ($(this).val()) : 0;
-                slXL = $(this).attr("slXL") == 'slXL' ? ($(this).val()) : 0;
-               
+                qtyy = $(this).val();
+                //slS = $(this).attr("slS") == 'slS' ? ($(this).val()) : 0;
+                //slM = $(this).attr("slM") == 'slM' ? ($(this).val()) : 0;
+                //slL = $(this).attr("slL") == 'slL' ? ($(this).val()) : 0;
+                //slXL = $(this).attr("slXL") == 'slXL' ? ($(this).val()) : 0;
+                var slS, slM, slL, slXL;
+                $("#row-" + pid+" input").each(function () {
+                    qty = $(this).val();
+                    var loai = $(this).attr("Loai");
+                    if (loai === "slS") slS = qty;
+                    if (loai === "slM") slM = qty;
+                    if (loai === "slL") slL = qty;
+                    if (loai === "slXL") slXL = qty;
+
+                });
+                alert("#row-" + pid + " input"+":   " +slS + "," + slM + "," + slL + "," + slXL)
                 $.ajax({
                     url: "/Cart/Update",
-                    data: { id: pid, quantity: qty, slS: slS, slM: slM, slL: slL, slXL: slXL},
+                    data: { id: pid, quantity: qtyy, slS: slS, slM: slM, slL: slL, slXL: slXL },
                     success: function (response) {
-                        $("#sum-" + pid).text($.number(response.Total));
-                        //$(".nn-cart-total").text($.number(response.Total));
+                        $("#sum-" + pid).text(response.tong);
+                        if (response.Mess != "") {
+                            location.reload();
+                            alert(response.Mess);
+                        }
                         $("#TongTien").text(response.Total);
-                    $("#cart-item").load("/Cart/_PartialCart");
+                        $("#cart-item").load("/Cart/_PartialCart");
                     },
                     complete: function () {
                         updateOrderSummary();
                     }
                 });
             });
-       
-    }
-    )
+            //jQuery(document).delegate(".quantity", "change", function () {
+            //    pid = $(this).attr("data-id");
+            //    qty = $(this).val();
+            //    slS = $(this).attr("slS") == 'slS' ? ($(this).val()) : 0;
+            //    slM = $(this).attr("slM") == 'slM' ? ($(this).val()) : 0;
+            //    slL = $(this).attr("slL") == 'slL' ? ($(this).val()) : 0;
+            //    slXL = $(this).attr("slXL") == 'slXL' ? ($(this).val()) : 0;
+
+            //    $.ajax({
+            //        url: "/Cart/Update",
+            //        data: { id: pid, quantity: qty, slS: slS, slM: slM, slL: slL, slXL: slXL },
+            //        success: function (response) {
+            //            $("#sum-" + pid).text($.number(response.Total));
+            //            if (response.Mess != "") alert(response.Mess);
+            //            $("#TongTien").text(response.Total);
+            //            $("#cart-item").load("/Cart/_PartialCart");
+            //        },
+            //        complete: function () {
+            //            updateOrderSummary();
+            //        }
+            //    });
+
+            //});
+
     function deleteFromCart(pid) {
         var tr = jQuery(".row-" + pid);
         jQuery.ajax({
@@ -184,6 +209,6 @@
     }
 </script>
 
-    
-    
+
+
 

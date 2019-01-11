@@ -3946,6 +3946,7 @@
     <Content Include="Views\Product\_ThoiTrangNu.cshtml" />
     <Content Include="Views\Slide\Index.cshtml" />
     <Content Include="Views\SoSanh\Index.cshtml" />
+    <Content Include="Views\Shared\_Clear.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

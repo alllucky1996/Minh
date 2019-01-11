@@ -130,20 +130,20 @@ function SoSanh(pid) {
 }
 function updateOrderSummary() {
 
-    jQuery.ajax({
-        url: '/Order/getOrderInfo',
-        type: 'Get',
-        dataType: 'json',
-        success: function (response) {
-            jQuery("#orderTransportCost").text(jQuery.number(response.TransportCost) + "đ");
-            jQuery("#orderDiscount").text(jQuery.number(response.Discount) + "đ");
-            jQuery("#totalOrder").text(jQuery.number(response.OrderTotal) + "đ");
-            jQuery("#discountDescription").html(response.DiscountDescription);
-        },
-        error: function (err) {
-            alert("Lỗi hệ thống, ấn F5 để refresh lại trình duyệt để tiếp tục.");
-        }
-    });
+    //jQuery.ajax({
+    //    url: '/Order/getOrderInfo',
+    //    type: 'Get',
+    //    dataType: 'json',
+    //    success: function (response) {
+    //        jQuery("#orderTransportCost").text(jQuery.number(response.TransportCost) + "đ");
+    //        jQuery("#orderDiscount").text(jQuery.number(response.Discount) + "đ");
+    //        jQuery("#totalOrder").text(jQuery.number(response.OrderTotal) + "đ");
+    //        jQuery("#discountDescription").html(response.DiscountDescription);
+    //    },
+    //    error: function (err) {
+    //        alert("Lỗi hệ thống, ấn F5 để refresh lại trình duyệt để tiếp tục.");
+    //    }
+    //});
 }
 
 
